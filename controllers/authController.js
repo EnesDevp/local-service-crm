@@ -1,87 +1,42 @@
-
-
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-
 
 exports.register = async (req, res) => {
     try {
         const { name, email, password, businessName } = req.body;
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Bu email zaten kayıtlı' });
-        }
+        if (await User.findOne({ email })) return res.status(400).json({ message: 'Email already exists' });
 
-
-        const user = new User({
-            name,
-            email,
-            password,
-            businessName
-        });
-
+        const user = new User({ name, email, password, businessName });
         await user.save();
 
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        );
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
         res.status(201).json({
-            message: 'Kayıt başarılı!',
+            message: 'Registration successful',
             token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                businessName: user.businessName,
-                subscription: user.subscription
-            }
+            user: { id: user._id, name, email, businessName, subscription: user.subscription }
         });
     } catch (error) {
-        console.error('Register error:', error);
-        res.status(500).json({ message: 'Server hatası', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
-
 
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
-
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: 'Email veya şifre yanlış' });
+        if (!user || !(await user.comparePassword(password))) {
+            return res.status(400).json({ message: 'Invalid email or password' });
         }
 
-
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Email veya şifre yanlış' });
-        }
-
-
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        );
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
         res.json({
-            message: 'Giriş başarılı!',
+            message: 'Login successful',
             token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                businessName: user.businessName,
-                subscription: user.subscription
-            }
+            user: { id: user._id, name: user.name, email, businessName: user.businessName, subscription: user.subscription }
         });
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server hatası', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };

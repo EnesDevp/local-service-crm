@@ -9,8 +9,6 @@ const {
 } = require('../controllers/leadController');
 
 const router = express.Router();
-
-
 router.use(auth);
 
 router.get('/', getLeads);
