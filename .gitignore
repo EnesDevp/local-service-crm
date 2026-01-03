@@ -1,8 +1,10 @@
-echo "# Node.js dependencies
+# Node.js dependencies
 node_modules/
+npm-debug.log
+yarn-error.log
 
 # Environment variables
-*.env
+.env
 
 # Build outputs
 dist/
@@ -25,16 +27,5 @@ logs/
 *.tmp
 *.bak
 
-# Backend-specific files (previously backend/.gitignore)
-backend/node_modules/
-backend/.env
-backend/dist/
-backend/build/
-
-# Frontend-specific files (previously frontend/.gitignore)
-frontend/node_modules/
-frontend/dist/
-frontend/build/
-
 # Database backups (if any)
-*.bak.*" > .gitignore
+*.bak.*
