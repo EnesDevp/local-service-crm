@@ -1,0 +1,40 @@
+echo "# Node.js dependencies
+node_modules/
+
+# Environment variables
+*.env
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS junk
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+
+# Backend-specific files (previously backend/.gitignore)
+backend/node_modules/
+backend/.env
+backend/dist/
+backend/build/
+
+# Frontend-specific files (previously frontend/.gitignore)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Database backups (if any)
+*.bak.*" > .gitignore
